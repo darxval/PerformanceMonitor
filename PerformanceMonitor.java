@@ -24,7 +24,7 @@ public class PerformanceMonitor {
         startTime = System.nanoTime();
     }
 
-    public void stopTimer(){
+       public void stopTimer(){
         long endTime = System.nanoTime();
         long diff = endTime - startTime;
         long milliseconds = diff /1000000;
@@ -38,20 +38,31 @@ public class PerformanceMonitor {
         }
 
         if(milliseconds > ERROR_THRESHOLD){
-            if(GlobalDebug.getInstance().getDebugLevel().ordinal() >= DebugLevel.ERRORS.ordinal()) {
-                Log.e(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
-            }
+            logError(milliseconds, profileLocation);
         } else if(milliseconds > WARNING_THRESHOLD) {
-            if(GlobalDebug.getInstance().getDebugLevel().ordinal() >= DebugLevel.WARNINGS.ordinal()) {
-                Log.w(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
-            }
+            logWarning(milliseconds, profileLocation);
         } else {
-            if(GlobalDebug.getInstance().getDebugLevel().equals(DebugLevel.VERBOSE)) {
-                Log.d(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
-            }
+            logVerbose(milliseconds, profileLocation);
         }
 
     }
 
+    private void logVerbose(long milliseconds, String profileLocation) {
+        if(GlobalDebug.getInstance().getDebugLevel().equals(DebugLevel.VERBOSE)) {
+            Log.d(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
+        }
+    }
+
+    private void logWarning(long milliseconds, String profileLocation) {
+        if(GlobalDebug.getInstance().getDebugLevel().ordinal() >= DebugLevel.WARNINGS.ordinal()) {
+            Log.w(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
+        }
+    }
+
+    private void logError(long milliseconds, String profileLocation) {
+        if(GlobalDebug.getInstance().getDebugLevel().ordinal() >= DebugLevel.ERRORS.ordinal()) {
+            Log.e(PERFORMANCE, profileLocation + " took " + milliseconds + " milliseconds");
+        }
+    }
 
 }
